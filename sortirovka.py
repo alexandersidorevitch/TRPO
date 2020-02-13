@@ -171,7 +171,7 @@ class ContingSort(Create):
         self.height_prym = self.result
         print(self.kol)
     def draw(self,el):
-        sleep(0.05)
+        sleep(0.01)
         self.tags.append(self.c.create_rectangle(el * self.width_prym, self.height, el * self.width_prym + self.width_prym,
                                 self.result[el],
                                 fill=self.colors_scheme[self.all_color][1], activefill="#CB602D"))
