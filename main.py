@@ -10,7 +10,7 @@ diveders = [int(i) for i in range(2,root.winfo_screenwidth()-36) if (root.winfo_
 height = int(root.winfo_screenheight() - 100)
 width = int(root.winfo_screenwidth() - 36)
 # kol = 40
-kol = 40
+kol = 498
 qui = QuickSort(width, height, kol, name=root, color_scheme="dracula")
 root.geometry(
     '{}x{}+{}+{}'.format(width, height, (root.winfo_screenwidth() - width - 100) // 2,
