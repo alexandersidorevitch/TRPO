@@ -11,7 +11,7 @@ colors_scheme = {"dracula": ("white", "#A9B7C6", "#A94826", "#8888C6", "#8DB897"
 diveders = [int(i) for i in range(2, root.winfo_screenwidth() - 36) if (root.winfo_screenwidth() - 36) % i == 0]
 height = int(root.winfo_screenheight() - 100)
 width = int(root.winfo_screenwidth() - 36)
-kol = 412
+kol = 41
 root.geometry(
     '{}x{}+{}+{}'.format(width, height, (root.winfo_screenwidth() - width - 100) // 2,
                          (root.winfo_screenheight() - height - 100) // 2))

@@ -2,7 +2,7 @@ import asyncio
 from decimal import Decimal as Des
 from random import choice
 from time import sleep
-from Create
+from create import *
 class InsertionSort(Create):
     def __init__(self, width: int, height: int, kol: int, **args):
         super().__init__(width, height, kol, args["name"], args["color_scheme"])

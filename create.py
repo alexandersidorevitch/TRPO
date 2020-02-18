@@ -50,7 +50,7 @@ class Create():
         self.c.itemconfig(self.tags[second_place], fill=precolor2)
         self.c.update()
 
-    def anamation(self):
+    def animation(self):
         for i in range(self.kol // 2):
             sleep(0.03)
             self.create(i, self.kol - i - 1)
