@@ -1,17 +1,15 @@
-from create import Create,ALL
-from decimal import Decimal as des
-from time import sleep
-from random import choice
 import asyncio
-
-
+from decimal import Decimal as Des
+from random import choice
+from time import sleep
+from Create
 class InsertionSort(Create):
     def __init__(self, width: int, height: int, kol: int, **args):
         super().__init__(width, height, kol, args["name"], args["color_scheme"])
         self.sleep = 1
         self.iter = 0
 
-    def sort(self, reverse=False):
+    def sort(self):
         self.c.update()
         for i in range(len(self.height_prym)):
             j = i - 1
@@ -27,8 +25,7 @@ class InsertionSort(Create):
             self.c.update()
             self.height_prym[j + 1] = key
         super().ranbow()
-        super().show()
-        print(self.iter)
+        super().animation()
 
 
 class QuickSort(Create):
@@ -38,25 +35,25 @@ class QuickSort(Create):
         self.iter = 0
         self.rand_colors = ('#D0FF00','#00FFA9',"#E99105","#E90084","#09E2E9")
 
-    async def show1(self, place, place2):
-        c = des(1 / des((90 // self.speed)))
-        if place > place2:
+    async def show1(self, first_place, second_place):
+        c = Des(1 / Des((90 // self.speed)))
+        if first_place > second_place:
             a = -1
             b = 1
         else:
             a = 1
             b = -1
-        precolor1 = self.c.itemcget(self.tags[place], 'fill')
-        precolor2 = self.c.itemcget(self.tags[place2], 'fill')
-        self.c.itemconfig(self.tags[place], fill=self.colors_scheme[self.all_color][2])
-        self.c.itemconfig(self.tags[place2], fill=self.colors_scheme[self.all_color][3])
+        precolor1 = self.c.itemcget(self.tags[first_place], 'fill')
+        precolor2 = self.c.itemcget(self.tags[second_place], 'fill')
+        self.c.itemconfig(self.tags[first_place], fill=self.colors_scheme[self.all_color][2])
+        self.c.itemconfig(self.tags[second_place], fill=self.colors_scheme[self.all_color][3])
         for i in range(90 // self.speed):
             await asyncio.sleep((1 / (((self.speed) * 10) ** 2)))
-            self.c.move(self.tags[place], self.width_prym * a * abs(place - place2) * c, 0)
-            self.c.move(self.tags[place2], self.width_prym * b * abs(place - place2) * c, 0)
+            self.c.move(self.tags[first_place], self.width_prym * a * abs(first_place - second_place) * c, 0)
+            self.c.move(self.tags[second_place], self.width_prym * b * abs(first_place - second_place) * c, 0)
             self.c.update()
-        self.c.itemconfig(self.tags[place], fill=precolor1)
-        self.c.itemconfig(self.tags[place2], fill=precolor2)
+        self.c.itemconfig(self.tags[first_place], fill=precolor1)
+        self.c.itemconfig(self.tags[second_place], fill=precolor2)
         self.c.update()
 
     def sort(self):
@@ -89,27 +86,26 @@ class QuickSort(Create):
 
         asyncio.run(quicksort(self.height_prym, 0, self.kol - 1))
         self.c.update()
-        print(self.iter)
 
-    def show2(self, place, place2):
-        c = des(1 / des((90 // self.speed)))
-        if place > place2:
+    def showNoAsync(self, firsr_place, second_place):
+        c = Des(1 / Des((90 // self.speed)))
+        if firsr_place > second_place:
             a = -1
             b = 1
         else:
             a = 1
             b = -1
-        precolor1 = self.c.itemcget(self.tags[place], 'fill')
-        precolor2 = self.c.itemcget(self.tags[place2], 'fill')
-        self.c.itemconfig(self.tags[place], fill=self.colors_scheme[self.all_color][2])
-        self.c.itemconfig(self.tags[place2], fill=self.colors_scheme[self.all_color][3])
+        precolor1 = self.c.itemcget(self.tags[firsr_place], 'fill')
+        precolor2 = self.c.itemcget(self.tags[second_place], 'fill')
+        self.c.itemconfig(self.tags[firsr_place], fill=self.colors_scheme[self.all_color][2])
+        self.c.itemconfig(self.tags[second_place], fill=self.colors_scheme[self.all_color][3])
         for i in range(90 // self.speed):
             sleep((1 / (((self.speed) * 10) ** 2)))
-            self.c.move(self.tags[place], self.width_prym * a * abs(place - place2) * c, 0)
-            self.c.move(self.tags[place2], self.width_prym * b * abs(place - place2) * c, 0)
+            self.c.move(self.tags[firsr_place], self.width_prym * a * abs(firsr_place - second_place) * c, 0)
+            self.c.move(self.tags[second_place], self.width_prym * b * abs(firsr_place - second_place) * c, 0)
             self.c.update()
-        self.c.itemconfig(self.tags[place], fill=precolor1)
-        self.c.itemconfig(self.tags[place2], fill=precolor2)
+        self.c.itemconfig(self.tags[firsr_place], fill=precolor1)
+        self.c.itemconfig(self.tags[second_place], fill=precolor2)
         self.c.update()
     def sort_no_async(self):
         def partition(nums, start, end):
@@ -122,11 +118,11 @@ class QuickSort(Create):
                 self.iter += 1
                 if nums[i] < pivotValue:
                     nums[i], nums[pivotIndex] = nums[pivotIndex], nums[i]
-                    self.show2(pivotIndex, i)
+                    self.showNoAsync(pivotIndex, i)
                     self.tags[i], self.tags[pivotIndex] = self.tags[pivotIndex], self.tags[i]
                     pivotIndex += 1
             nums[pivotIndex], nums[end] = nums[end], nums[pivotIndex]
-            self.show2(pivotIndex, end)
+            self.showNoAsync(pivotIndex, end)
             self.tags[pivotIndex], self.tags[end] = self.tags[end], self.tags[pivotIndex]
             for i in range(start, end + 1):
                 self.c.itemconfig(self.tags[i], fill=self.colors_scheme[self.all_color][1])
@@ -140,7 +136,6 @@ class QuickSort(Create):
 
         quicksort(self.height_prym, 0, self.kol - 1)
         self.c.update()
-        print(self.iter)
 
 class ContingSort(Create):
     def __init__(self, width: int, height: int, kol: int, **args):
@@ -169,7 +164,6 @@ class ContingSort(Create):
                 pass
         self.tags = tags
         self.height_prym = self.result
-        print(self.kol)
     def draw(self,el):
         sleep(0.01)
         self.tags.append(self.c.create_rectangle(el * self.width_prym, self.height, el * self.width_prym + self.width_prym,
@@ -183,14 +177,6 @@ class BubbleSort(Create):
         self.iter = 0
         self.flag = True
 
-    def changeTimeToCompile(self, speed):
-        if speed == 3:
-            self.sleep = 7
-        elif speed == 2:
-            self.sleep = 4
-        else:
-            self.sleep = 1
-
     def sort(self):
         for i in range(self.kol):
             self.flag = True
@@ -202,7 +188,3 @@ class BubbleSort(Create):
                     self.tags[j + 1], self.tags[j] = self.tags[j], self.tags[j + 1]
             self.c.itemconfig(self.tags[-i - 1], fill=self.colors_scheme[self.all_color][4])
             self.c.update()
-        self.create(1, 1)
-        # super().ranbow()
-        # super().show()
-        print(self.iter)
