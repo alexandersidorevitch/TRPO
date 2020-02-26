@@ -14,7 +14,7 @@ class Ui_Form(QtWidgets.QMainWindow):
     def setupUi(self, Form):
         super(Ui_Form, self).__init__()
         Form.setObjectName("Form")
-        Form.resize(817, 640)
+        Form.resize(807, 640)
         Form.setMouseTracking(False)
         self.comboBox = QtWidgets.QComboBox(Form)
         self.comboBox.setGeometry(QtCore.QRect(60, 150, 161, 22))
