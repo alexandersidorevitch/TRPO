@@ -1,60 +1,31 @@
-import pymysql.cursors
-from math import sin,pi
-def view(connect):
-    with connect.cursor() as cursor:
-        cursor.execute("""SELECT * FROM users""")
-        bd = cursor.fetchall()
-        for d in bd:
-            print(d)
+from sqlite3 import *
 
 
-def Change(connect, query: str):
-    try:
-        with connect.cursor() as cursor:
-            cursor.execute(query)
-        connect.commit()
-    except:
-        pass
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
 
 
-link = pymysql.connect(host='localhost',
-                       user='root',
-                       password='root',
-                       db='sin',
-                       charset='utf8mb4',
-                       cursorclass=pymysql.cursors.DictCursor
-                       )
-# view(link)
-query = "TRUNCATE `sinus`"
-Change(link,query)
-POV = 1
-for _ in range(POV):
-    x = -100
-    shag = 200 / (2880*3) * POV
-    for hour in range(0,24):
-        time = ""
-        if hour < 10:
-            time += "0" + str(hour) + ":"
-        else:
-            time += str(hour) + ":"
-        for minute in range(0,60):
-            time = time[:3]
-            if minute < 10:
-                time += "0" + str(minute) + ":"
-            else:
-                time += str(minute) + ":"
-            for sec in range(0,60,10):
-                time = time[:6]
-                if sec < 10:
-                    time += "0" + str(sec)
-                else:
-                    time += str(sec)
-                query = "INSERT INTO `sinus` (`y`, `t`) VALUES ('"+str(x*x*0.5)+"', '2020-02-20 "+time+"')"
-                Change(link, query)
-                x += shag
+conn = connect("mydatabase.db")  # или :memory: чтобы сохранить в RAM
 
-# view(link)
-# query = ""
-# Change(link,query)
-# view(link)
-link.close()
+conn.row_factory = dict_factory
+cursor = conn.cursor()
+# Создание таблицы
+polya = [
+    "id INTEGER PRIMARY KEY, USERNAME VARCHAR(50) NOT NULL, name VARCHAR(50) NOT NULL,grup VARCHAR(10), resut INTEGER NOT NULL",
+    "id INTEGER PRIMARY KEY, USERNAME VARCHAR(50), password VARCHAR(50), name VARCHAR(50), grup VARCHAR(10)"
+    ]
+
+tables = ["records",
+          "users"]
+for i in range(len(tables)):
+    cursor.execute("CREATE TABLE IF NOT EXISTS " + tables[i] + " ( " + polya[i] + " );")
+# info = [("Pasha2001","Sanya1235","Pasha","8 class")]
+# cursor.executemany("INSERT INTO users (USERNAME,password,name,grup)  VALUES (?,?,?,?)", info)
+# cursor.execute("TRUCATE users")
+# conn.commit()
+cursor.execute("SELECT  * FROM users")
+print(*[description[0] for description in cursor.description])
+print(*(cursor.fetchall()))

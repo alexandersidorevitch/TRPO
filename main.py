@@ -2,7 +2,6 @@ from tkinter import *
 
 from sortirovka import *
 
-print(hex(int("a9b7d0", 16) + 50))
 root = Tk()
 #                           0,     1,          2,          3,      4
 #                            bg, normal_color, choise1, chois2, ok_color
