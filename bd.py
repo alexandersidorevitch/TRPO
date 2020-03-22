@@ -8,7 +8,7 @@ def dict_factory(cursor, row):
     return d
 
 
-conn = connect("mydatabase.db")  # или :memory: чтобы сохранить в RAM
+conn = connect("TRPO.db")  # или :memory: чтобы сохранить в RAM
 
 conn.row_factory = dict_factory
 cursor = conn.cursor()
@@ -16,7 +16,7 @@ cursor = conn.cursor()
 polya = [
     "id INTEGER PRIMARY KEY, USERNAME VARCHAR(50) NOT NULL, name VARCHAR(50) NOT NULL,grup VARCHAR(10), resut INTEGER NOT NULL",
     "id INTEGER PRIMARY KEY, USERNAME VARCHAR(50), password VARCHAR(50), name VARCHAR(50), grup VARCHAR(10)"
-    ]
+]
 
 tables = ["records",
           "users"]
