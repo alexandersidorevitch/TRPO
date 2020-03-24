@@ -6,21 +6,6 @@ from ttkthemes import ThemedTk
 
 
 # Режим отображение таблиц
-def polya(event):
-    print(event.widget.get())
-def cr(event):
-    # print(event.widget.get())
-
-    cursor.execute("SELECT * FROM " + event.widget.get())
-    # print(*cursor.fetchall()[0].keys())
-    listpolya = []
-    for i in cursor.fetchall()[0].keys():
-            print(i)
-            listpolya.append(i)
-    print(listpolya)
-
-
-
 def dict_factory(cursor, row):
     d = {}
     for idx, col in enumerate(cursor.description):
@@ -43,23 +28,14 @@ print(font.families())
 root.geometry("600x500+300+200")
 
 frame = Frame(root)
-frame.pack(side='left')
+frame.grid()
 
 listtables = []
 cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
 for i in cursor.fetchall():
     if i['name'] != "sqlite_sequence":
         listtables.append(i['name'])
-frame2 = Frame(root)
-frame2.pack(side='right')
-ComboTables = Combobox(frame2, values=[], height=10,state="disabled")
-ComboTables.set(value="Поля")
-ComboTables.bind('<<ComboboxSelected>>', polya)
-ComboTables.pack(side="right")
-
-
-ComboTables = Combobox(frame, values=listtables, height=10,state="readonly")
-ComboTables.set(value = "Таблицы")
-ComboTables.bind('<<ComboboxSelected>>',cr)
+ComboTables = Combobox(frame, values=listtables, height=10)
+Combobox.set(root,)
 ComboTables.pack(side="left")
 root.mainloop()

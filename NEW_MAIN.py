@@ -34,9 +34,6 @@ def press(number: int):
 root = ThemedTk()
 root.set_theme('breeze')
 root.geometry("600x500+300+200")
-listbox1 = Listbox(root, height=10, width=15, selectmode=EXTENDED, bg='#222222', highlightcolor='red', fg="#EEEEEE")
-listbox2 = Listbox(root, height=5, width=15, selectmode=SINGLE)
-button1 = Button(root, text='ok', width=25, height=5, bg='white', fg='red', font='arial 14')
 buttons = []
 q = root.grid()
 fon = list(font.families())
