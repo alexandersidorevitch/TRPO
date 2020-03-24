@@ -8,11 +8,11 @@ def callback(event):
 
 def but(number: int):
     global buttons
-    buttons[number]["bg"] = 'black'
+    buttons[number]["bg"] = '#333333'
 
 def butleave(number: int):
     global buttons
-    buttons[number]["bg"] = 'white'
+    buttons[number]["bg"] = '#222222'
 
 
 root = Tk()
@@ -22,7 +22,7 @@ listbox2 = Listbox(root, height=5, width=15, selectmode=SINGLE)
 button1 = Button(root, text='ok', width=25, height=5, bg='white', fg='red', font='arial 14')
 buttons = []
 for i in range(5):
-    buttons.append(Button(text=str(i), width=10, height=4,bg='white',))
+    buttons.append(Button(text=str(i), width=100, height=4,bg='#222222',fg = '#EEEEEE',bd=0,activebackground='#333333',activeforeground='#EEEEEE'))
     buttons[i].bind("<Enter>", lambda event, number=i: but(number))
     buttons[i].bind("<Leave>", lambda event, number=i: butleave(number))
     buttons[i].pack()
