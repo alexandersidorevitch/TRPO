@@ -45,7 +45,7 @@ class Create():
             sleep(1 / des(((self.speed * 10) ** 2)))
             self.c.move(self.tags[first_place], self.width_prym * rev * abs(first_place - second_place), 0)
             self.c.move(self.tags[second_place], -self.width_prym * rev * abs(first_place - second_place), 0)
-            self.c. ()
+            self.c.update()
         self.c.itemconfig(self.tags[first_place], fill=precolor1)
         self.c.itemconfig(self.tags[second_place], fill=precolor2)
         self.c.update()

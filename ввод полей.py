@@ -1,4 +1,4 @@
-from sqlite3 import *
+from pymysql import *
 from tkinter import font
 from tkinter.ttk import *
 
@@ -14,9 +14,16 @@ def cr(event):
     cursor.execute("SELECT * FROM " + event.widget.get())
     # print(*cursor.fetchall()[0].keys())
     listpolya = []
-    for i in cursor.fetchall()[0].keys():
-            print(i)
-            listpolya.append(i)
+    all = cursor.fetchall()
+    if len(all):
+        for i in all[0].keys():
+                print(i)
+                listpolya.append(i)
+        ComboPolya['values'] = listpolya
+        ComboPolya['state'] = 'readonly'
+    else:
+        ComboPolya['values'] = []
+        ComboPolya['state'] = 'disabled'
     print(listpolya)
 
 
@@ -28,7 +35,7 @@ def dict_factory(cursor, row):
     return d
 
 
-conn = connect("TRPO.db")  # подлкючение к БД
+conn = connect('localhost','root','root','project_trpo')  # подлкючение к БД
 
 conn.row_factory = dict_factory
 
@@ -46,16 +53,16 @@ frame = Frame(root)
 frame.pack(side='left')
 
 listtables = []
-cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+cursor.execute("SHOW TABLES")
 for i in cursor.fetchall():
     if i['name'] != "sqlite_sequence":
         listtables.append(i['name'])
 frame2 = Frame(root)
 frame2.pack(side='right')
-ComboTables = Combobox(frame2, values=[], height=10,state="disabled")
-ComboTables.set(value="Поля")
-ComboTables.bind('<<ComboboxSelected>>', polya)
-ComboTables.pack(side="right")
+ComboPolya = Combobox(frame2, values=[], height=10,state="disabled")
+ComboPolya.set(value="Поля")
+ComboPolya.bind('<<ComboboxSelected>>', polya)
+ComboPolya.pack(side="right")
 
 
 ComboTables = Combobox(frame, values=listtables, height=10,state="readonly")
@@ -63,3 +70,8 @@ ComboTables.set(value = "Таблицы")
 ComboTables.bind('<<ComboboxSelected>>',cr)
 ComboTables.pack(side="left")
 root.mainloop()
+# for kof in range(1, 10):
+#     for x in range(10, 100):
+#         for y in range(10, 100):
+#             if (kof * x * y == 100 * x + y):
+#                 print(kof, x, y)
