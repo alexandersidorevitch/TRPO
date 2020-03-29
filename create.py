@@ -18,7 +18,7 @@ class Create():
         # self.height_prym = [int(i) for i in range(10,kol*2+10,2)]
         self.height_prym = [randint(height // 15, height - 10) for i in range(kol)]
         self.c = Canvas(name, height=height, width=width, bg=self.colors_scheme[color_scheme][0])
-        self.speed = 90
+        self.speed = 1
         self.colors = [0 for i in range(kol)]
         for i in range(kol):
             self.tags.append(
@@ -50,14 +50,6 @@ class Create():
         self.c.itemconfig(self.tags[second_place], fill=precolor2)
         self.c.update()
 
-    def animation(self):
-        for i in range(self.kol // 2):
-            sleep(0.03)
-            self.create(i, self.kol - i - 1)
-        sleep(2)
-        for i in range(self.kol // 2, self.kol):
-            sleep(0.03)
-            self.create(i, self.kol - i - 1)
 
     def ranbow(self):
         ran = (int(i) / 100000 for i in range(0, 100000, 100000 // self.kol))
