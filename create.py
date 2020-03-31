@@ -13,12 +13,13 @@ class Create():
         self.tags = []
         self.kol = kol
         self.all_color = color_scheme
+        self.scheme = color_scheme
         self.colors_scheme = {"dracula": ("#525252", "#A9B7C6", "#A94826", "#8888C6", "#8DB897"),
                               "normal": ("white", "#C61B0C", "#1FA2C6", "#C67000", "#25A90D")}
         # self.height_prym = [int(i) for i in range(10,kol*2+10,2)]
         self.height_prym = [randint(height // 15, height - 10) for i in range(kol)]
         self.c = Canvas(name, height=height, width=width, bg=self.colors_scheme[color_scheme][0])
-        self.speed = 1
+        self.speed = 30
         self.colors = [0 for i in range(kol)]
         for i in range(kol):
             self.tags.append(

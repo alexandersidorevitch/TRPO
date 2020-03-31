@@ -6,7 +6,7 @@ from create import *
 class InsertionSort(Create):
     def __init__(self, width: int, height: int, kol: int, **args):
         super().__init__(width, height, kol, args["name"], args["color_scheme"])
-        self.sleep = 1
+        self.sleep = 30
         self.iter = 0
 
     def sort(self):
@@ -33,7 +33,7 @@ class QuickSort(Create):
         super().__init__(width, height, kol, args["name"], args["color_scheme"])
         self.sleep = 1
         self.iter = 0
-        self.rand_colors = ('#D0FF00','#00FFA9',"#E99105","#E90084","#09E2E9")
+        self.rand_colors = ('#D0FF00', '#00FFA9', "#E99105", "#E90084", "#09E2E9")
 
     async def show1(self, first_place, second_place):
         c = Des(1 / Des((90 // self.speed)))
@@ -100,7 +100,7 @@ class QuickSort(Create):
         self.c.itemconfig(self.tags[firsr_place], fill=self.colors_scheme[self.all_color][2])
         self.c.itemconfig(self.tags[second_place], fill=self.colors_scheme[self.all_color][3])
         for i in range(90 // self.speed):
-            sleep((1 / (((self.speed) * 10) * 10)))
+            sleep((1 / (( (self.speed) * 10) * 10)))
             self.c.move(self.tags[firsr_place], self.width_prym * right_side * abs(firsr_place - second_place) * c, 0)
             self.c.move(self.tags[second_place], self.width_prym * left_side * abs(firsr_place - second_place) * c, 0)
             self.c.update()

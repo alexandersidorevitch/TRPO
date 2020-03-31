@@ -28,6 +28,8 @@ def pow(number, n):
 
 def press(number: int):
     global buttons
+
+    messagebox.showwarning('Заголовок', 'Текст')
     res = messagebox.askquestion('Заголовок', 'Текст')
     res = messagebox.askyesno('Заголовок', 'Текст')
     res = messagebox.askyesnocancel('Заголовок', 'Текст')
@@ -38,7 +40,7 @@ def press(number: int):
 
 root = ThemedTk()
 root.set_theme('breeze')
-root.geometry("600x500+300+200")
+root.geometry("600x500")
 buttons = []
 q = root.grid()
 fon = list(font.families())
