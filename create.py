@@ -13,6 +13,7 @@ class Create():
         self.tags = []
         self.kol = kol
         self.all_color = color_scheme
+        self.scheme = color_scheme
         self.colors_scheme = {"dracula": ("#525252", "#A9B7C6", "#A94826", "#8888C6", "#8DB897"),
                               "normal": ("white", "#C61B0C", "#1FA2C6", "#C67000", "#25A90D")}
         # self.height_prym = [int(i) for i in range(10,kol*2+10,2)]
@@ -42,7 +43,8 @@ class Create():
         self.c.itemconfig(self.tags[first_place], fill=self.colors_scheme[self.all_color][2])
         self.c.itemconfig(self.tags[second_place], fill=self.colors_scheme[self.all_color][3])
         for i in range(90 // self.speed):
-            sleep(1 / des(((self.speed * 10) ** 2)))
+            sleep(1 / (self.speed * 80))
+            # sleep(1 / des(((self.speed * 10) ** 2)))
             self.c.move(self.tags[first_place], self.width_prym * rev * abs(first_place - second_place), 0)
             self.c.move(self.tags[second_place], -self.width_prym * rev * abs(first_place - second_place), 0)
             self.c.update()
@@ -50,14 +52,6 @@ class Create():
         self.c.itemconfig(self.tags[second_place], fill=precolor2)
         self.c.update()
 
-    def animation(self):
-        for i in range(self.kol // 2):
-            sleep(0.03)
-            self.create(i, self.kol - i - 1)
-        sleep(2)
-        for i in range(self.kol // 2, self.kol):
-            sleep(0.03)
-            self.create(i, self.kol - i - 1)
 
     def ranbow(self):
         ran = (int(i) / 100000 for i in range(0, 100000, 100000 // self.kol))

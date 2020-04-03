@@ -6,7 +6,7 @@ from create import *
 class InsertionSort(Create):
     def __init__(self, width: int, height: int, kol: int, **args):
         super().__init__(width, height, kol, args["name"], args["color_scheme"])
-        self.sleep = 1
+        self.speed = 2
         self.iter = 0
 
     def sort(self):
@@ -31,9 +31,9 @@ class InsertionSort(Create):
 class QuickSort(Create):
     def __init__(self, width: int, height: int, kol: int, **args):
         super().__init__(width, height, kol, args["name"], args["color_scheme"])
-        self.sleep = 1
+        self.sleep = 30
         self.iter = 0
-        self.rand_colors = ('#D0FF00','#00FFA9',"#E99105","#E90084","#09E2E9")
+        self.rand_colors = ('#D0FF00', '#00FFA9', "#E99105", "#E90084", "#09E2E9")
 
     async def show1(self, first_place, second_place):
         c = Des(1 / Des((90 // self.speed)))
@@ -90,19 +90,19 @@ class QuickSort(Create):
     def showNoAsync(self, firsr_place, second_place):
         c = Des(1 / Des((90 // self.speed)))
         if firsr_place > second_place:
-            a = -1
-            b = 1
+            right_side = -1
+            left_side = 1
         else:
-            a = 1
-            b = -1
+            right_side = 1
+            left_side = -1
         precolor1 = self.c.itemcget(self.tags[firsr_place], 'fill')
         precolor2 = self.c.itemcget(self.tags[second_place], 'fill')
         self.c.itemconfig(self.tags[firsr_place], fill=self.colors_scheme[self.all_color][2])
         self.c.itemconfig(self.tags[second_place], fill=self.colors_scheme[self.all_color][3])
         for i in range(90 // self.speed):
-            sleep((1 / (((self.speed) * 10) ** 2)))
-            self.c.move(self.tags[firsr_place], self.width_prym * a * abs(firsr_place - second_place) * c, 0)
-            self.c.move(self.tags[second_place], self.width_prym * b * abs(firsr_place - second_place) * c, 0)
+            sleep(1 / (self.speed * 80))
+            self.c.move(self.tags[firsr_place], self.width_prym * right_side * abs(firsr_place - second_place) * c, 0)
+            self.c.move(self.tags[second_place], self.width_prym * left_side * abs(firsr_place - second_place) * c, 0)
             self.c.update()
         self.c.itemconfig(self.tags[firsr_place], fill=precolor1)
         self.c.itemconfig(self.tags[second_place], fill=precolor2)

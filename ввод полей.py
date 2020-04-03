@@ -1,7 +1,7 @@
 from pymysql import *
 from tkinter import font
 from tkinter.ttk import *
-
+import pyAesCrypt as  crypt
 from ttkthemes import ThemedTk
 
 
@@ -11,14 +11,14 @@ def polya(event):
 def cr(event):
     # print(event.widget.get())
 
-    cursor.execute("SELECT * FROM " + event.widget.get())
+    cursor.execute("SHOW COLUMNS FROM " + event.widget.get())
     # print(*cursor.fetchall()[0].keys())
     listpolya = []
     all = cursor.fetchall()
     if len(all):
-        for i in all[0].keys():
+        for i in all:
                 print(i)
-                listpolya.append(i)
+                listpolya.append(i[0])
         ComboPolya['values'] = listpolya
         ComboPolya['state'] = 'readonly'
     else:
@@ -55,8 +55,7 @@ frame.pack(side='left')
 listtables = []
 cursor.execute("SHOW TABLES")
 for i in cursor.fetchall():
-    if i['name'] != "sqlite_sequence":
-        listtables.append(i['name'])
+        listtables.append(i[0])
 frame2 = Frame(root)
 frame2.pack(side='right')
 ComboPolya = Combobox(frame2, values=[], height=10,state="disabled")

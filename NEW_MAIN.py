@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import font
+from tkinter import font, messagebox
 
 from ttkthemes import ThemedTk
 
@@ -24,17 +24,23 @@ def pow(number, n):
     for i in range(n):
         otvet *= number
     return otvet
-def gandon(but):
-    but += 2
+
 
 def press(number: int):
     global buttons
+
+    messagebox.showwarning('Заголовок', 'Текст')
+    res = messagebox.askquestion('Заголовок', 'Текст')
+    res = messagebox.askyesno('Заголовок', 'Текст')
+    res = messagebox.askyesnocancel('Заголовок', 'Текст')
+    res = messagebox.askokcancel('Заголовок', 'Текст')
+    res = messagebox.askretrycancel('Заголовок', 'Текст')
     buttons[number]['text'] = 'Privet'
 
 
 root = ThemedTk()
 root.set_theme('breeze')
-root.geometry("600x500+300+200")
+root.geometry("600x500")
 buttons = []
 q = root.grid()
 fon = list(font.families())
@@ -49,8 +55,5 @@ for i in range(9):
     buttons[i].bind("<Enter>", lambda event, number=i: but(number))
     buttons[i].bind("<Leave>", lambda event, number=i: butleave(number))
     # buttons[i].pack()
-i = 0
-a = 5
-a = gandon(a)
-print(a)
+
 root.mainloop()
