@@ -19,7 +19,7 @@ class Create():
         # self.height_prym = [int(i) for i in range(10,kol*2+10,2)]
         self.height_prym = [randint(height // 15, height - 10) for i in range(kol)]
         self.c = Canvas(name, height=height, width=width, bg=self.colors_scheme[color_scheme][0])
-        self.speed = 30
+        self.speed = 90
         self.colors = [0 for i in range(kol)]
         for i in range(kol):
             self.tags.append(
@@ -43,7 +43,8 @@ class Create():
         self.c.itemconfig(self.tags[first_place], fill=self.colors_scheme[self.all_color][2])
         self.c.itemconfig(self.tags[second_place], fill=self.colors_scheme[self.all_color][3])
         for i in range(90 // self.speed):
-            sleep(1 / des(((self.speed * 10) ** 2)))
+            sleep(1 / (self.speed * 80))
+            # sleep(1 / des(((self.speed * 10) ** 2)))
             self.c.move(self.tags[first_place], self.width_prym * rev * abs(first_place - second_place), 0)
             self.c.move(self.tags[second_place], -self.width_prym * rev * abs(first_place - second_place), 0)
             self.c.update()
