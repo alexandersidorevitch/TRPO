@@ -5,7 +5,7 @@ from time import sleep
 from create import *
 class InsertionSort(Create):
     def __init__(self, width: int, height: int, kol: int, **args):
-        super().__init__(width, height, kol, args["name"], args["color_scheme"])
+        super().__init__(width, height, kol, args["name"], args["color_scheme"],args["values"])
         self.speed = 2
         self.iter = 0
 

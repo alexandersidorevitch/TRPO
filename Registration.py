@@ -41,7 +41,7 @@ def dict_factory(cursor, row):
     return d
 
 
-conn = connect('project_trpo')  # подлкючение к БД
+conn = connect('C://MAMP//db//sqllite//project_trpo')  # подлкючение к БД
 
 conn.row_factory = dict_factory
 cursor = conn.cursor()

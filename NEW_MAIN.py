@@ -28,13 +28,6 @@ def pow(number, n):
 
 def press(number: int):
     global buttons
-
-    messagebox.showwarning('Заголовок', 'Текст')
-    res = messagebox.askquestion('Заголовок', 'Текст')
-    res = messagebox.askyesno('Заголовок', 'Текст')
-    res = messagebox.askyesnocancel('Заголовок', 'Текст')
-    res = messagebox.askokcancel('Заголовок', 'Текст')
-    res = messagebox.askretrycancel('Заголовок', 'Текст')
     buttons[number]['text'] = 'Privet'
 
 

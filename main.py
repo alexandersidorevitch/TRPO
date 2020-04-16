@@ -12,12 +12,14 @@ def start():
     diveders = [int(i) for i in range(2, root_main.winfo_screenwidth() - 36) if (root_main.winfo_screenwidth() - 36) % i == 0]
     height = int(root_main.winfo_screenheight() - 100)
     width = int(root_main.winfo_screenwidth() - 36)
-    kol = diveders[6]
+    values = list(map(lambda x:int(x/100*height),[10,20,30,40,50,60,70,80]))
+    kol = len(values)
+    print(values)
     root_main.geometry(
         '{}x{}+{}+{}'.format(width, height, (root_main.winfo_screenwidth() - width - 100) // 2,
                              (root_main.winfo_screenheight() - height - 100) // 2))
     root_main.resizable(False, False)
-    inc = InsertionSort(width, height, kol, name=root_main, color_scheme="dracula")
+    inc = InsertionSort(width, height, kol, name=root_main, color_scheme="dracula",values = values)
     inc.sort()
     root_main.mainloop()
 

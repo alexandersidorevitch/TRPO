@@ -63,7 +63,7 @@ conn.row_factory = dict_factory
 cursor = conn.cursor()
 
 root = ThemedTk()
-root.set_theme('breeze')в
+root.set_theme('breeze')
 root.resizable(False, False)
 root.geometry("600x500")
 login = StringVar()

@@ -1,41 +1,46 @@
-from sqlite3 import *
-from tkinter import font
-from tkinter.ttk import *
-
-from ttkthemes import ThemedTk
+from tkinter import *
 
 
-# Режим отображение таблиц
-def dict_factory(cursor, row):
-    d = {}
-    for idx, col in enumerate(cursor.description):
-        d[col[0]] = row[idx]
-    return d
+def eventHandler(event):  # Обрабатываем точку клика
+    canvas.unbind("<Button-1>")
+    global mouseX, mouseY
+    mouseX, mouseY = event.x, event.y
+    if mouseX < 30: mouseX = 30  # Ограничиваем перемещение по X
+    if mouseY < 30: mouseY = 30  # и по Y
+    moveBall()
 
 
-conn = connect("TRPO.db")  # подлкючение к БД
+def moveBall():
+    x, y = canvas.coords(ball)[2], canvas.coords(ball)[3]  # Координаты шара
+    x = {
+        x < mouseX: 1,
+        x == mouseX: 0,
+        x > mouseX: -1
+    }[True]  # Сдвиг по X
+    y = {
+        y < mouseY: 1,
+        y == mouseY: 0,
+        y > mouseY: -1
+    }[True]  # Сдвиг по Y
+    canvas.move("smile", x, y)  # Двигаем в нужном направлении
+    if canvas.coords(ball)[2] != mouseX or canvas.coords(ball)[3] != mouseY:
+        root.after(10, moveBall)
+    else:
+        canvas.bind('<Button-1>', eventHandler)
 
-conn.row_factory = dict_factory
 
-cursor = conn.cursor()
+root = Tk()
+mouseX, mouseY = None, None
 
-root = ThemedTk()
-root.set_theme('equilux')
-print(font.families())
-# s = Style()
-# print(s.theme_names())
-# s.theme_use('clam')
-root.geometry("600x500+300+200")
+canvas = Canvas(root, width=500, height=500, bg="white")
 
-frame = Frame(root)
-frame.grid()
+ball = canvas.create_oval((5, 5), (35, 35), fill="yellow", outline="yellow", tag="smile")
+canvas.create_arc((15, 15), (25, 25), style=ARC, start=210, extent=120, tag="smile")
+canvas.create_line((15, 15), (16, 16), tag="smile")
+canvas.create_line((25, 15), (26, 16), tag="smile")
 
-listtables = []
-cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-for i in cursor.fetchall():
-    if i['name'] != "sqlite_sequence":
-        listtables.append(i['name'])
-ComboTables = Combobox(frame, values=listtables, height=10)
-Combobox.set(root,)
-ComboTables.pack(side="left")
+canvas.bind('<Button-1>', eventHandler)
+
+canvas.pack()
+
 root.mainloop()

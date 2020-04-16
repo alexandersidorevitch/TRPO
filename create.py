@@ -6,7 +6,9 @@ from tkinter import *
 
 
 class Create():
-    def __init__(self, width: int, height: int, kol: int, name, color_scheme: str):
+    def __init__(self, width: int, height: int, kol: int, name, color_scheme: str, values=[]):
+        if values is None:
+            values = []
         self.height = height
         self.width = width
         self.width_prym = des(des(width) / des(kol))
@@ -17,7 +19,13 @@ class Create():
         self.colors_scheme = {"dracula": ("#525252", "#A9B7C6", "#A94826", "#8888C6", "#8DB897"),
                               "normal": ("white", "#C61B0C", "#1FA2C6", "#C67000", "#25A90D")}
         # self.height_prym = [int(i) for i in range(10,kol*2+10,2)]
-        self.height_prym = [randint(height // 15, height - 10) for i in range(kol)]
+        print(values)
+        if values:
+            print(1)
+            self.height_prym = values
+        else:
+            print(2)
+            self.height_prym = [randint(height // 15, height - 10) for i in range(kol)]
         self.c = Canvas(name, height=height, width=width, bg=self.colors_scheme[color_scheme][0])
         self.speed = 90
         self.colors = [0 for i in range(kol)]
@@ -27,6 +35,8 @@ class Create():
                                         self.height_prym[i],
                                         fill=self.colors_scheme[color_scheme][1], activefill="#CB602D"))
         self.c.pack()
+    def set_values(self, values):
+        self.height_prym = values
 
     def ALL_COLOR(self):
         return self.all_color
