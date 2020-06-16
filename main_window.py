@@ -41,10 +41,10 @@ class VerticalScrolledFrame:
         self.vizual_lebel = tk.Label(master, text="Введите количество элементов или массив значений",
                                      font=font.Font(family="@Microsoft YaHei UI Light", size=14))
         self.edit.bind("<Any-KeyRelease>", self.check)
-        # ttk.Notebook()
+        # ttk.Notebook()relief=tk.FLAT,
         self.usual_text = tk.Text(width=82, height=10, wrap=tk.WORD, font=("@Microsoft YaHei UI Light", 16),
                                   relief=tk.FLAT,
-                                  bg='#FFFFFF',fg='#000000')
+                                  bg='#F0F0F0',fg='#000000')
 
         scroll = tk.Scrollbar(command=self.usual_text.yview)
         self.usual_text.config(yscrollcommand=scroll.set)

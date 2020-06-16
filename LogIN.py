@@ -91,7 +91,7 @@ class Login:
                 self.cursor.execute("SELECT password FROM users WHERE ? = USERNAME", (self.login.get(),))
                 all_data = self.cursor.fetchall()[0]
                 if self.password.get() == rsa.decrypt(all_data['password'], rsa.PrivateKey(*priv_key)).decode('utf-8'):
-                    self.LOGIN.withdraw()
+                    self.LOGIN.destroy()
                     main_window.main_window()
 
                 else:
