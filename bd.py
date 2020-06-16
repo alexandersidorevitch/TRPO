@@ -13,6 +13,7 @@ conn = connect('project_trpo')  # подлкючение к БД
 
 conn.row_factory = dict_factory
 
+
 cursor = conn.cursor()
 
 # Создание таблиц

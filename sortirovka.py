@@ -1,11 +1,14 @@
 import asyncio
 from decimal import Decimal as Des
 from random import choice
-from time import sleep
+
 from create import *
+
+
 class InsertionSort(Create):
-    def __init__(self, width: int, height: int, kol: int, **args):
-        super().__init__(width, height, kol, args["name"], args["color_scheme"],args["values"])
+    def __init__(self, width: int, height: int, kol: int, speed: int, **args):
+        super().__init__(width=width, height=height, kol=kol, speed=speed, name=args["name"],
+                         color_scheme=args["color_scheme"], values=args["values"])
         self.speed = 2
         self.iter = 0
 
@@ -23,14 +26,14 @@ class InsertionSort(Create):
                 j -= 1
             self.c.itemconfig(self.tags[j + 1], fill=self.colors_scheme[self.all_color][4])
             self.c.update()
-            self.height_prym[j + 1] = key
+            # self.height_prym[j + 1] = key
         super().ranbow()
-        super().animation()
 
 
-class QuickSort(Create):
-    def __init__(self, width: int, height: int, kol: int, **args):
-        super().__init__(width, height, kol, args["name"], args["color_scheme"])
+class AsyncQuickSort(Create):
+    def __init__(self, width: int, height: int, kol: int, speed: int, **args):
+        super().__init__(width=width, height=height, kol=kol, speed=speed, name=args["name"],
+                         color_scheme=args["color_scheme"], values=args["values"])
         self.sleep = 30
         self.iter = 0
         self.rand_colors = ('#D0FF00', '#00FFA9', "#E99105", "#E90084", "#09E2E9")
@@ -86,6 +89,14 @@ class QuickSort(Create):
 
         asyncio.run(quicksort(self.height_prym, 0, self.kol - 1))
         self.c.update()
+class QuickSort(Create):
+    def __init__(self, width: int, height: int, kol: int, speed: int, **args):
+        super().__init__(width=width, height=height, kol=kol, speed=speed, name=args["name"],
+                         color_scheme=args["color_scheme"], values=args["values"])
+        self.sleep = 30
+        self.iter = 0
+        self.rand_colors = ('#D0FF00', '#00FFA9', "#E99105", "#E90084", "#09E2E9")
+
 
     def showNoAsync(self, firsr_place, second_place):
         c = Des(1 / Des((90 // self.speed)))
@@ -107,7 +118,8 @@ class QuickSort(Create):
         self.c.itemconfig(self.tags[firsr_place], fill=precolor1)
         self.c.itemconfig(self.tags[second_place], fill=precolor2)
         self.c.update()
-    def sort_no_async(self):
+
+    def sort(self):
         def partition(nums, start, end):
             tmp_color = choice(self.rand_colors)
             for i in range(start, end + 1):
@@ -137,11 +149,14 @@ class QuickSort(Create):
         quicksort(self.height_prym, 0, self.kol - 1)
         self.c.update()
 
+
 class ContingSort(Create):
-    def __init__(self, width: int, height: int, kol: int, **args):
-        super().__init__(width, height, kol, args["name"], args["color_scheme"])
+    def __init__(self, width: int, height: int, kol: int, speed: int, **args):
+        super().__init__(width=width, height=height, kol=kol, speed=speed, name=args["name"],
+                         color_scheme=args["color_scheme"], values=args["values"])
         self.iter = 0
         self.result = []
+
     def sort(self):
         self.c.update()
         sleep(3)
@@ -159,20 +174,25 @@ class ContingSort(Create):
                 self.result += [i] * count[i]
                 for _ in range(count[i]):
                     self.draw(index)
-                    index+=1
+                    index += 1
             except:
                 pass
         self.tags = tags
         self.height_prym = self.result
-    def draw(self,el):
+
+    def draw(self, el):
         sleep(0.01)
-        self.tags.append(self.c.create_rectangle(el * self.width_prym, self.height, el * self.width_prym + self.width_prym,
-                                self.result[el],
-                                fill=self.colors_scheme[self.all_color][1], activefill="#CB602D"))
+        self.tags.append(
+            self.c.create_rectangle(el * self.width_prym, self.height, el * self.width_prym + self.width_prym,
+                                    self.result[el],
+                                    fill=self.colors_scheme[self.all_color][1], activefill="#CB602D"))
         self.c.update()
+
+
 class BubbleSort(Create):
-    def __init__(self, width: int, height: int, kol: int, **args):
-        super().__init__(width, height, kol, args["name"], args["color_scheme"])
+    def __init__(self, width: int, height: int, kol: int, speed: int, **args):
+        super().__init__(width=width, height=height, kol=kol, speed=speed, name=args["name"],
+                         color_scheme=args["color_scheme"], values=args["values"])
         self.sleep = 1
         self.iter = 0
         self.flag = True
@@ -183,8 +203,10 @@ class BubbleSort(Create):
             for j in range(self.kol - i - 1):
                 self.iter += 1
                 if self.height_prym[j] > self.height_prym[j + 1]:
-                    self.height_prym[j + 1], self.height_prym[j] = self.height_prym[j], self.height_prym[j + 1]
                     self.create(j, j + 1)
+                    self.height_prym[j + 1], self.height_prym[j] = self.height_prym[j], self.height_prym[j + 1]
                     self.tags[j + 1], self.tags[j] = self.tags[j], self.tags[j + 1]
-            self.c.itemconfig(self.tags[-i - 1], fill=self.colors_scheme[self.all_color][4])
+                self.c.itemconfig(self.tags[-i - 1], fill=self.colors_scheme[self.all_color][4])
+
+            # self.c.itemconfig(self.tags[-i - 1], fill=self.colors_scheme[self.all_color][4])
             self.c.update()

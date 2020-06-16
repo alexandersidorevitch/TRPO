@@ -6,9 +6,10 @@ from tkinter import *
 
 
 class Create():
-    def __init__(self, width: int, height: int, kol: int, name, color_scheme: str, values=[]):
+    def __init__(self, width: int, height: int, kol: int, name, color_scheme: str,speed: int, values=None):
         if values is None:
             values = []
+        self.stop = False
         self.height = height
         self.width = width
         self.width_prym = des(des(width) / des(kol))
@@ -19,15 +20,12 @@ class Create():
         self.colors_scheme = {"dracula": ("#525252", "#A9B7C6", "#A94826", "#8888C6", "#8DB897"),
                               "normal": ("white", "#C61B0C", "#1FA2C6", "#C67000", "#25A90D")}
         # self.height_prym = [int(i) for i in range(10,kol*2+10,2)]
-        print(values)
         if values:
-            print(1)
             self.height_prym = values
         else:
-            print(2)
             self.height_prym = [randint(height // 15, height - 10) for i in range(kol)]
         self.c = Canvas(name, height=height, width=width, bg=self.colors_scheme[color_scheme][0])
-        self.speed = 90
+        self.speed = speed
         self.colors = [0 for i in range(kol)]
         for i in range(kol):
             self.tags.append(
@@ -45,15 +43,17 @@ class Create():
         self.speed = speed
 
     def create(self, first_place, second_place, reverse=False):
-        rev = des(1 / des((90 // self.speed)))
+        rev = des(1 / des((90)))
+        if self.stop:
+            return
         if reverse:
             rev = -rev
         precolor1 = self.c.itemcget(self.tags[first_place], 'fill')
         precolor2 = self.c.itemcget(self.tags[second_place], 'fill')
         self.c.itemconfig(self.tags[first_place], fill=self.colors_scheme[self.all_color][2])
         self.c.itemconfig(self.tags[second_place], fill=self.colors_scheme[self.all_color][3])
-        for i in range(90 // self.speed):
-            sleep(1 / (self.speed * 80))
+        for i in range(90):
+            sleep(1 / (self.speed ** 2 * 20))
             # sleep(1 / des(((self.speed * 10) ** 2)))
             self.c.move(self.tags[first_place], self.width_prym * rev * abs(first_place - second_place), 0)
             self.c.move(self.tags[second_place], -self.width_prym * rev * abs(first_place - second_place), 0)
