@@ -208,5 +208,6 @@ class BubbleSort(Create):
                     self.tags[j + 1], self.tags[j] = self.tags[j], self.tags[j + 1]
                 self.c.itemconfig(self.tags[-i - 1], fill=self.colors_scheme[self.all_color][4])
 
-            # self.c.itemconfig(self.tags[-i - 1], fill=self.colors_scheme[self.all_color][4])
+
             self.c.update()
+        self.c.itemconfig(self.tags[-i - 1], fill=self.colors_scheme[self.all_color][4])

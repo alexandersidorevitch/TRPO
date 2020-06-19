@@ -78,8 +78,8 @@ class VerticalScrolledFrame:
 
     def create_text(self):
 
-        self.main_text.place(x=191, rely=0.1)
-        self.usual_text.place(x=191, y=200)
+        self.main_text.place(x=191, rely=0.05)
+        self.usual_text.place(x=191, y=300)
 
     def delete_text(self):
         self.main_text.place_forget()
@@ -119,7 +119,7 @@ class VerticalScrolledFrame:
     def press_vizual(self):
         if self.varible.get().count(','):
             if len(self.varible.get().split(',')) < 180:
-                speed = 30
+                speed = 10
             else:
                 speed = 3
             Visualition.start(self.func, len(self.varible.get().split(',')), speed,
@@ -164,7 +164,7 @@ class main_window:
         self.correct = 0
         self.text = tk.StringVar()
         width = 1200
-        height = 600
+        height = 900
         self.MAIN_WINDOW.geometry(
             '{}x{}+{}+{}'.format(width, height, (self.MAIN_WINDOW.winfo_screenwidth() - width) // 2,
                                  (self.MAIN_WINDOW.winfo_screenheight() - height) // 2))
@@ -284,7 +284,7 @@ class main_window:
                 tk.Checkbutton(self.MAIN_WINDOW, text=text[0], variable=self.variable[i], onvalue=1, offvalue=0,
                                wraplength=1000,
                                font=font.Font(family="@Microsoft YaHei UI Light", size=20)))
-            self.test_buttons[i].place(x=225, y=300 + 70 * i)
+            self.test_buttons[i].place(x=225, y=150 + 100 * i)
 
     def activate_RadioButton(self, texts):
         self.delete_buttons()
@@ -292,9 +292,9 @@ class main_window:
         self.variable.append(tk.IntVar())
         for i, text in enumerate(texts):
             self.test_buttons.append(
-                tk.Radiobutton(self.MAIN_WINDOW, text=text[0], variable=self.variable[0], value=i, wraplength=1000,
+                tk.Radiobutton(self.MAIN_WINDOW, text=text[0], variable=self.variable[0], value=i, wraplength=900,
                                font=font.Font(family="@Microsoft YaHei UI Light", size=20)))
-            self.test_buttons[i].place(x=225, y=300 + 70 * i)
+            self.test_buttons[i].place(x=225, y=150 + 140 * i)
 
     def press(self, key):
         self.vizual_delete()
@@ -315,8 +315,11 @@ class main_window:
             self.frame.update_texts(usual_text=all_data[block].get('Theory'), main_text=all_data[block]['topic'])
             self.frame.create_text()
         elif item == 3:
+            self.end['bg'] = '#7CD5CB'
+            self.end['state'] = 'normal'
             cursor = self.conn.cursor()
             self.correct = 0
+            self.number = 0
             cursor.execute("SELECT id, question, type FROM Questions WHERE topic = ?", (block,))
             all_data = cursor.fetchall()
             self.questions = tuple(i['question'] for i in all_data)
@@ -337,18 +340,20 @@ class main_window:
 
             self.prev['state'] = 'disabled'
             self.prev['bg'] = '#333333'
-            if 1 == len(self.questions):
+            if len(self.questions) == 1:
                 self.next['state'] = 'disabled'
                 self.next['bg'] = '#333333'
                 self.end['state'] = 'normal'
                 self.end['bg'] = '#7CD5CB'
-                self.end.place(x=800, y=500)
-
-            self.next.place(x=1000, y=500)
-            self.prev.place(x=900, y=500)
+                self.end.place(x=800, y=800)
+            else:
+                self.next['state'] = 'normal'
+                self.next['bg'] = '#7CD5CB'
+            self.next.place(x=1000, y=800)
+            self.prev.place(x=900, y=800)
 
     def check(self):
-        if self.types[self.number] == 1:
+        if self.types[self.number] == '1':
             # проверка CheckButton
             for i, answer in enumerate(self.answers):
                 if not answer[1] == self.variable[i].get():
@@ -382,13 +387,20 @@ class main_window:
         all_data = cursor.fetchall()
         self.answers = [(i['LABEL'], i['correct']) for i in all_data]
         shuffle(self.answers)
-        print(self.types)
         if self.types[self.number] == '1':
             self.activate_CheckButton(self.answers)
         else:
             self.activate_RadioButton(self.answers)
-        if self.number + 1 == len(self.questions):
-            self.end.place(x=800, y=500)
+
+        if self.number == 0:
+            self.prev['state'] = 'disabled'
+            self.prev['bg'] = '#333333'
+        else:
+            self.prev['state'] = 'normal'
+            self.prev['bg'] = '#7CD5CB'
+
+        if len(self.questions) == self.number + 1:
+            self.end.place(x=800, y=800)
             self.next['state'] = 'disabled'
             self.next['bg'] = '#333333'
         else:
@@ -397,22 +409,42 @@ class main_window:
 
         self.frame.update_texts(main_text=self.questions[self.number])
         self.frame.create_text()
-        self.next.place(x=1000, y=500)
-        self.prev.place(x=900, y=500)
+        self.next.place(x=1000, y=800)
+        self.prev.place(x=900, y=800)
 
 
     def prev_press(self):
-        if not self.number + 1 == len(self.questions):
-            self.end.place_forget()
-
-        if self.number == 0:
-            self.prev['state'] = 'disabled'
-            self.prev['bg'] = '#333333'
-        else:
-            self.prev['state'] = 'normal'
-            self.prev['bg'] = '#7CD5CB'
         self.number -= 1
-        self.correct -= 1
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT LABEL, correct FROM All_Answers WHERE question_id = ?", (self.id[self.number],))
+        all_data = cursor.fetchall()
+        self.answers = [(i['LABEL'], i['correct']) for i in all_data]
+        shuffle(self.answers)
+        if self.check():
+            self.correct -= 1
+
+
+        if self.types[self.number] == '1':
+            self.activate_CheckButton(self.answers)
+        else:
+            self.activate_RadioButton(self.answers)
+
+        if self.number != len(self.questions) - 1:
+            self.next['state'] = 'normal'
+            self.next['bg'] = '#7CD5CB'
+
+        if len(self.questions) == self.number + 1:
+            self.end.place(x=800, y=800)
+            self.next['state'] = 'disabled'
+            self.next['bg'] = '#333333'
+        else:
+            self.next['state'] = 'normal'
+            self.next['bg'] = '#7CD5CB'
+
+        self.frame.update_texts(main_text=self.questions[self.number])
+        self.frame.create_text()
+        self.next.place(x=1000, y=800)
+        self.prev.place(x=900, y=800)
 
     def vizual_delete(self):
         self.frame.vizual_lebel.place_forget()

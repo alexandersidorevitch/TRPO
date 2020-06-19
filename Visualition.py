@@ -8,11 +8,11 @@ def start(func, kol, speed, values=None, color_scheme="dracula"):
     root_main.iconbitmap('icon.ico')
     root_main.title("Vizulization")
     root_main.set_theme('equilux')
-    height = int(root_main.winfo_screenheight() - 100)
-    width = int(root_main.winfo_screenwidth() - 36)
+    height = root_main.winfo_screenheight() - 300
+    width = root_main.winfo_screenwidth() - 300
     root_main.geometry(
-        '{}x{}+{}+{}'.format(width, height, (root_main.winfo_screenwidth() - width - 100) // 2,
-                             (root_main.winfo_screenheight() - height - 100) // 2))
+        '{}x{}+{}+{}'.format(width, height, (root_main.winfo_screenwidth() - width) // 2,
+                             (root_main.winfo_screenheight() - height) // 2))
     root_main.resizable(False, False)
     if values:
         kol = len(values)
