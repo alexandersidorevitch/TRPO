@@ -3,7 +3,7 @@
 import tkinter as tk
 from random import shuffle
 from sqlite3 import *
-from tkinter import font
+from tkinter import font,messagebox
 
 import Visualition
 
@@ -30,7 +30,7 @@ class VerticalScrolledFrame:
         self.outer = tk.Frame(master, **kwargs)
         self.edit = tk.Entry(master, textvariable=self.varible, bg="#222222", fg="#FFFFFF",
                              selectbackground="#60CA85", font=("@Microsoft YaHei UI Light", 32, "bold"))
-        kwargs = dict(text="Вход", width=12, height=1, bg='#222222', fg='#EEEEEE', bd=0,
+        kwargs = dict(text="начать".capitalize(), width=12, height=1, bg='#222222', fg='#EEEEEE', bd=0,
                       activebackground='#333333',
                       activeforeground='#EEEEEE', highlightcolor="black", relief=tk.SUNKEN, state='disabled',
                       font=("@Microsoft YaHei UI Light", 32, "bold"))
@@ -44,7 +44,7 @@ class VerticalScrolledFrame:
         # ttk.Notebook()relief=tk.FLAT,
         self.usual_text = tk.Text(width=82, height=10, wrap=tk.WORD, font=("@Microsoft YaHei UI Light", 16),
                                   relief=tk.FLAT,
-                                  bg='#F0F0F0',fg='#000000')
+                                  bg='#F0F0F0', fg='#000000')
 
         scroll = tk.Scrollbar(command=self.usual_text.yview)
         self.usual_text.config(yscrollcommand=scroll.set)
@@ -77,6 +77,7 @@ class VerticalScrolledFrame:
             return getattr(self.inner, item)
 
     def create_text(self):
+
         self.main_text.place(x=191, rely=0.1)
         self.usual_text.place(x=191, y=200)
 
@@ -107,11 +108,10 @@ class VerticalScrolledFrame:
             self.canvas.yview_scroll(1, "units")
 
     def update_texts(self, **kwargs):
-        main_text = kwargs.pop("main_text", None)
-        usual_text = kwargs.pop("usual_text", None)
+        main_text = kwargs.pop("main_text", '')
+        usual_text = kwargs.pop("usual_text", '')
         self.main_text["text"] = main_text
         self.usual_text.configure(state='normal')
-        print('\n\n\n\n\n\n'+self.usual_text.get(1.0,tk.END))
         self.usual_text.delete(1.0, tk.END)
         self.usual_text.insert(1.0, str(usual_text))
         self.usual_text.configure(state='disabled')
@@ -153,9 +153,15 @@ class main_window:
     def __init__(self):
         self.MAIN_WINDOW = tk.Tk()
         self.MAIN_WINDOW.title("Scrollbar Test")
-        self.MAIN_WINDOW.resizable(False,True)
+        self.MAIN_WINDOW.resizable(False, True)
         self.variable = []
         self.test_buttons = []
+        self.questions = tuple()
+        self.answers = []
+        self.types = tuple()
+        self.id = tuple()
+        self.number = 0
+        self.correct = 0
         self.text = tk.StringVar()
         width = 1200
         height = 600
@@ -178,12 +184,23 @@ class main_window:
                                            borderwidth=2,
                                            relief=tk.SUNKEN,
                                            bg="black")
-
+        self.next = tk.Button(self.MAIN_WINDOW, text='Следующий', width=10, height=2, bg='#7CD5CB', fg='#111111', bd=0,
+                              activebackground='#333333',
+                              disabledforeground='#FFFFFF', highlightcolor="black", relief=tk.SUNKEN,
+                              font=font.Font(family="@Microsoft YaHei UI Light", size=10), command=self.next_press)
+        self.prev = tk.Button(self.MAIN_WINDOW, text='Предыдущий', width=10, height=2, bg='#7CD5CB', fg='#111111', bd=0,
+                              activebackground='#333333',
+                              disabledforeground='#FFFFFF', highlightcolor="black", relief=tk.SUNKEN,
+                              font=font.Font(family="@Microsoft YaHei UI Light", size=10),command=self.prev_press)
+        self.end = tk.Button(self.MAIN_WINDOW, text='Завершить', width=10, height=2, bg='#7CD5CB', fg='#111111', bd=0,
+                             activebackground='#333333',
+                             disabledforeground='#FFFFFF', highlightcolor="black", relief=tk.SUNKEN,
+                             font=font.Font(family="@Microsoft YaHei UI Light", size=10),command=self.end_press)
         self.frame.pack(fill=tk.BOTH, expand=True)  # fill window
         cursor = self.conn.cursor()
         cursor.execute("SELECT topic, Theory FROM Topics")
         data = cursor.fetchall()
-        self.frame.update_texts(usual_text=data[0]['Theory'],main_text=data[0]['topic'])
+        self.frame.update_texts(usual_text=data[0]['Theory'], main_text=data[0]['topic'])
         # self.frame.pack_propagate(0)
         self.MAIN_WINDOW.update()
         # self.frame.edit.place(x=225, y=20)
@@ -208,8 +225,8 @@ class main_window:
                 self.buttons.append(
                     tk.Button(self.frame,
                               text=(t + ' по "' + text['topic'] + '"')[:21] + "\n" + (t + ' по "' + text['topic']
-                                                                             + '"')[
-                                                                            21:], width=24, height=3,
+                                                                                      + '"')[
+                                                                                     21:], width=24, height=3,
                               bg='#222222', fg='#EEEEEE', bd=0,
                               activebackground='#333333',
                               activeforeground='#EEEEEE', highlightcolor="black", relief=tk.SUNKEN, justify=tk.LEFT,
@@ -218,7 +235,6 @@ class main_window:
                 self.buttons[i + kol].bind("<Enter>", lambda event, number=i + kol: self.but(number))
                 self.buttons[i + kol].bind("<Leave>", lambda event, number=i + kol: self.butleave(number))
                 self.buttons[i + kol].grid(column=2, row=i + kol)
-
 
         mas = ['ghgf', 'gfdg', 'fdswedfsd', '32e3df', '1wewer34frdsf']
         # self.activate_RadioButton(mas)
@@ -252,29 +268,38 @@ class main_window:
     def delete_buttons(self):
         for button in self.test_buttons:
             button.place_forget()
+
+        self.next.place_forget()
+        self.end.place_forget()
+        self.prev.place_forget()
         self.test_buttons.clear()
         self.variable.clear()
 
     def activate_CheckButton(self, texts):
         self.delete_buttons()
-        shuffle(texts)
+        self.variable = []
         for i, text in enumerate(texts):
             self.variable.append(tk.IntVar())
             self.test_buttons.append(
-                tk.Checkbutton(self.MAIN_WINDOW, text=text, variable=self.variable[i], onvalue=1, offvalue=0))
-            self.test_buttons[i].place(x=225, y=375 + 30 * i)
+                tk.Checkbutton(self.MAIN_WINDOW, text=text[0], variable=self.variable[i], onvalue=1, offvalue=0,
+                               wraplength=1000,
+                               font=font.Font(family="@Microsoft YaHei UI Light", size=20)))
+            self.test_buttons[i].place(x=225, y=300 + 70 * i)
 
     def activate_RadioButton(self, texts):
         self.delete_buttons()
+        self.variable.clear()
         self.variable.append(tk.IntVar())
-        shuffle(texts)
         for i, text in enumerate(texts):
             self.test_buttons.append(
-                tk.Radiobutton(self.MAIN_WINDOW, text=text, variable=self.variable[0], value=i))
-            self.test_buttons[i].place(x=225, y=375 + 30 * i)
+                tk.Radiobutton(self.MAIN_WINDOW, text=text[0], variable=self.variable[0], value=i, wraplength=1000,
+                               font=font.Font(family="@Microsoft YaHei UI Light", size=20)))
+            self.test_buttons[i].place(x=225, y=300 + 70 * i)
 
     def press(self, key):
         self.vizual_delete()
+        self.frame.delete_text()
+        self.delete_buttons()
         item = key % 4
         block = key // 4
         self.frame.func = \
@@ -289,6 +314,105 @@ class main_window:
             all_data = cursor.fetchall()
             self.frame.update_texts(usual_text=all_data[block].get('Theory'), main_text=all_data[block]['topic'])
             self.frame.create_text()
+        elif item == 3:
+            cursor = self.conn.cursor()
+            self.correct = 0
+            cursor.execute("SELECT id, question, type FROM Questions WHERE topic = ?", (block,))
+            all_data = cursor.fetchall()
+            self.questions = tuple(i['question'] for i in all_data)
+            self.types = tuple(i['type'] for i in all_data)
+            self.id = tuple(i['id'] for i in all_data)
+            self.frame.update_texts(main_text=all_data[0]['question'])
+            self.frame.create_text()
+            cursor.execute("SELECT LABEL, correct FROM All_Answers WHERE question_id = ?", (self.id[0],))
+            all_data = cursor.fetchall()
+            self.answers = [(i['LABEL'], i['correct']) for i in all_data]
+            shuffle(self.answers)
+            if self.types[0] == '1':
+                self.activate_CheckButton(self.answers)
+            else:
+                self.activate_RadioButton(self.answers)
+
+            self.variable[0].set(-1)
+
+            self.prev['state'] = 'disabled'
+            self.prev['bg'] = '#333333'
+            if 1 == len(self.questions):
+                self.next['state'] = 'disabled'
+                self.next['bg'] = '#333333'
+                self.end['state'] = 'normal'
+                self.end['bg'] = '#7CD5CB'
+                self.end.place(x=800, y=500)
+
+            self.next.place(x=1000, y=500)
+            self.prev.place(x=900, y=500)
+
+    def check(self):
+        if self.types[self.number] == 1:
+            # проверка CheckButton
+            for i, answer in enumerate(self.answers):
+                if not answer[1] == self.variable[i].get():
+                    return False
+            else:
+                return True
+        else:
+            # проверка RadioButton
+            for i, answer in enumerate(self.answers):
+                if answer[1] == 1:
+                    if self.variable[0].get() == i:
+                        return True
+                    break
+            return False
+
+    def end_press(self):
+        if self.check():
+            self.correct += 1
+        self.end['state'] = 'disabled'
+        self.end['bg'] = '#333333'
+
+        messagebox.askquestion('Конец', 'Ваш резульльтат прохождени теста ' + str(round(self.correct / len(self.questions) * 100,1)) + ' %.')
+
+    def next_press(self):
+        if self.check():
+            self.correct += 1
+
+        self.number += 1
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT LABEL, correct FROM All_Answers WHERE question_id = ?", (self.id[self.number],))
+        all_data = cursor.fetchall()
+        self.answers = [(i['LABEL'], i['correct']) for i in all_data]
+        shuffle(self.answers)
+        print(self.types)
+        if self.types[self.number] == '1':
+            self.activate_CheckButton(self.answers)
+        else:
+            self.activate_RadioButton(self.answers)
+        if self.number + 1 == len(self.questions):
+            self.end.place(x=800, y=500)
+            self.next['state'] = 'disabled'
+            self.next['bg'] = '#333333'
+        else:
+            self.next['state'] = 'normal'
+            self.next['bg'] = '#7CD5CB'
+
+        self.frame.update_texts(main_text=self.questions[self.number])
+        self.frame.create_text()
+        self.next.place(x=1000, y=500)
+        self.prev.place(x=900, y=500)
+
+
+    def prev_press(self):
+        if not self.number + 1 == len(self.questions):
+            self.end.place_forget()
+
+        if self.number == 0:
+            self.prev['state'] = 'disabled'
+            self.prev['bg'] = '#333333'
+        else:
+            self.prev['state'] = 'normal'
+            self.prev['bg'] = '#7CD5CB'
+        self.number -= 1
+        self.correct -= 1
 
     def vizual_delete(self):
         self.frame.vizual_lebel.place_forget()
@@ -296,7 +420,8 @@ class main_window:
         self.frame.vizual_button.place_forget()
 
     def vizual(self):
-        self.frame.delete_text()
+        self.delete_buttons()
+        self.frame.varible.set("")
         self.frame.vizual_lebel.place(x=500, y=340)
         self.frame.edit.place(x=500, y=375)
         self.frame.vizual_button.place(x=500, y=150)
