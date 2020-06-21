@@ -3,9 +3,16 @@
 import tkinter as tk
 from random import shuffle
 from sqlite3 import *
-from tkinter import font,messagebox
+from tkinter import font, messagebox
 
 import Visualition
+
+invert = int("bbbbbb", 16)
+
+
+def invert_color(color):
+    rezult = str(hex(abs(invert - int(color[1:], 16))))[2:]
+    return '#' + (6 - len(rezult)) * '0' + rezult
 
 
 class VerticalScrolledFrame:
@@ -28,23 +35,24 @@ class VerticalScrolledFrame:
         self.master = master
         self.func = None
         self.outer = tk.Frame(master, **kwargs)
-        self.edit = tk.Entry(master, textvariable=self.varible, bg="#222222", fg="#FFFFFF",
-                             selectbackground="#60CA85", font=("@Microsoft YaHei UI Light", 32, "bold"))
-        kwargs = dict(text="начать".capitalize(), width=12, height=1, bg='#222222', fg='#EEEEEE', bd=0,
-                      activebackground='#333333',
-                      activeforeground='#EEEEEE', highlightcolor="black", relief=tk.SUNKEN, state='disabled',
+        self.edit = tk.Entry(master, textvariable=self.varible, bg=invert_color("#222222"), fg=invert_color("#FFFFFF"),
+                             selectbackground=invert_color("#60CA85"), font=("@Microsoft YaHei UI Light", 32, "bold"))
+        kwargs = dict(text="начать".capitalize(), width=12, height=1, bg=invert_color('#222222'),
+                      fg=invert_color('#EEEEEE'), bd=0,
+                      activebackground=invert_color('#333333'),
+                      activeforeground=invert_color('#EEEEEE'), relief=tk.SUNKEN, state='disabled',
                       font=("@Microsoft YaHei UI Light", 32, "bold"))
         self.vizual_button = tk.Button(master, **kwargs,
                                        command=lambda: self.press_vizual())
-        self.main_text = tk.Label(self.outer, text="", font=("Bahnschrift Light SemiCondensed", 32, "bold"))
+        self.main_text = tk.Label(self.outer, text="", font=("Bahnschrift Light SemiCondensed", 32, "bold"),bg=invert_color('#F0F0F0'), fg=invert_color('#111111'))
 
         self.vizual_lebel = tk.Label(master, text="Введите количество элементов или массив значений",
-                                     font=font.Font(family="@Microsoft YaHei UI Light", size=14))
+                                     font=font.Font(family="@Microsoft YaHei UI Light", size=14),bg=bg,fg=invert_color('#000000'))
         self.edit.bind("<Any-KeyRelease>", self.check)
         # ttk.Notebook()relief=tk.FLAT,
         self.usual_text = tk.Text(width=82, height=10, wrap=tk.WORD, font=("@Microsoft YaHei UI Light", 16),
                                   relief=tk.FLAT,
-                                  bg='#F0F0F0', fg='#000000')
+                                  bg=invert_color('#F0F0F0'), fg=invert_color('#111111'))
 
         scroll = tk.Scrollbar(command=self.usual_text.yview)
         self.usual_text.config(yscrollcommand=scroll.set)
@@ -62,6 +70,8 @@ class VerticalScrolledFrame:
         self.vsb['command'] = self.canvas.yview
 
         self.inner = tk.Frame(self.canvas, bg=bg)
+        self.outer['bg'] = bg
+        self.inner['bg'] = bg
         # pack the inner Frame into the Canvas with the topleft corner 4 pixels offset
         self.canvas.create_window(0, 0, window=self.inner, anchor='nw')
         self.inner.bind("<Configure>", self._on_frame_configure)
@@ -107,6 +117,9 @@ class VerticalScrolledFrame:
         elif event.num == 5 or event.delta < 0:
             self.canvas.yview_scroll(1, "units")
 
+    def invert_color(self, color):
+        return '#' + str(hex(abs(self.color - int(color, 16))))[2:]
+
     def update_texts(self, **kwargs):
         main_text = kwargs.pop("main_text", '')
         usual_text = kwargs.pop("usual_text", '')
@@ -149,11 +162,19 @@ class VerticalScrolledFrame:
 
 
 #  **** SCROLL BAR TEST *****
+
 class main_window:
-    def __init__(self):
+    def __init__(self,varib=1):
         self.MAIN_WINDOW = tk.Tk()
         self.MAIN_WINDOW.title("Scrollbar Test")
         self.MAIN_WINDOW.resizable(False, True)
+
+
+        self.color = 0
+        if varib:
+            global invert
+            invert = 0
+        print('#' + str(hex(abs(self.color - int('7CD5CB', 16))))[2:])
         self.variable = []
         self.test_buttons = []
         self.questions = tuple()
@@ -163,6 +184,14 @@ class main_window:
         self.number = 0
         self.correct = 0
         self.text = tk.StringVar()
+        self.menu_varible = tk.IntVar()
+        menu = tk.Menu()
+        settings = tk.Menu(tearoff=0)
+        self.menu_varible.set(varib)
+        settings.add_radiobutton(label='Темная тема', value=0, variable=self.menu_varible,command=self.invett_colors)
+        settings.add_radiobutton(label='Светлая тема', value=1, variable=self.menu_varible,command=self.invett_colors)
+        menu.add_cascade(label='Настройки темы', menu=settings)
+        self.MAIN_WINDOW.config(menu=menu)
         width = 1200
         height = 900
         self.MAIN_WINDOW.geometry(
@@ -183,19 +212,22 @@ class main_window:
                                            width=168,
                                            borderwidth=2,
                                            relief=tk.SUNKEN,
-                                           bg="black")
-        self.next = tk.Button(self.MAIN_WINDOW, text='Следующий', width=10, height=2, bg='#7CD5CB', fg='#111111', bd=0,
+                                           bg=invert_color("#F0F0F0"))
+        self.next = tk.Button(self.MAIN_WINDOW, text='Следующий', width=10, height=2, bg=invert_color('#7CD5CB'),
+                              fg='#111111', bd=0,
                               activebackground='#333333',
                               disabledforeground='#FFFFFF', highlightcolor="black", relief=tk.SUNKEN,
                               font=font.Font(family="@Microsoft YaHei UI Light", size=10), command=self.next_press)
-        self.prev = tk.Button(self.MAIN_WINDOW, text='Предыдущий', width=10, height=2, bg='#7CD5CB', fg='#111111', bd=0,
+        self.prev = tk.Button(self.MAIN_WINDOW, text='Предыдущий', width=10, height=2, bg=invert_color('#7CD5CB'),
+                              fg='#111111', bd=0,
                               activebackground='#333333',
                               disabledforeground='#FFFFFF', highlightcolor="black", relief=tk.SUNKEN,
-                              font=font.Font(family="@Microsoft YaHei UI Light", size=10),command=self.prev_press)
-        self.end = tk.Button(self.MAIN_WINDOW, text='Завершить', width=10, height=2, bg='#7CD5CB', fg='#111111', bd=0,
+                              font=font.Font(family="@Microsoft YaHei UI Light", size=10), command=self.prev_press)
+        self.end = tk.Button(self.MAIN_WINDOW, text='Завершить', width=10, height=2, bg=invert_color('#7CD5CB'),
+                             fg='#111111', bd=0,
                              activebackground='#333333',
                              disabledforeground='#FFFFFF', highlightcolor="black", relief=tk.SUNKEN,
-                             font=font.Font(family="@Microsoft YaHei UI Light", size=10),command=self.end_press)
+                             font=font.Font(family="@Microsoft YaHei UI Light", size=10), command=self.end_press)
         self.frame.pack(fill=tk.BOTH, expand=True)  # fill window
         cursor = self.conn.cursor()
         cursor.execute("SELECT topic, Theory FROM Topics")
@@ -204,6 +236,8 @@ class main_window:
         # self.frame.pack_propagate(0)
         self.MAIN_WINDOW.update()
         # self.frame.edit.place(x=225, y=20)
+
+        self.MAIN_WINDOW['bg'] = invert_color('#F0F0F0')
         self.MAIN_WINDOW.update()
         self.frame.create_text()
         texts_for_buttons = ('Теория', 'Визуализация', 'Тест')
@@ -212,9 +246,11 @@ class main_window:
         #             '"Быстрая" сортировка с асинхронностью.', 'Сортировка подсчётом.']
         for i, text in enumerate(all_data):
             self.buttons.append(
-                tk.Button(self.frame, text=text['topic'], width=24, height=3, bg='#7CD5CB', fg='#111111', bd=0,
-                          activebackground='#333333',
-                          disabledforeground='#111111', highlightcolor="black", relief=tk.SUNKEN, wraplength=100,
+                tk.Button(self.frame, text=text['topic'], width=24, height=3,
+                          bg=invert_color('#7CD5CB'), fg='#111111', bd=0,
+                          activebackground=invert_color('#333333'),
+                          disabledforeground='#111111', highlightcolor="black", relief=tk.SUNKEN,
+                          wraplength=100,
                           state='disabled',
                           command=lambda key=i + kol: self.press(key)))
             self.buttons[i + kol].bind("<Enter>", lambda event, number=i + kol: self.but(number))
@@ -227,9 +263,10 @@ class main_window:
                               text=(t + ' по "' + text['topic'] + '"')[:21] + "\n" + (t + ' по "' + text['topic']
                                                                                       + '"')[
                                                                                      21:], width=24, height=3,
-                              bg='#222222', fg='#EEEEEE', bd=0,
-                              activebackground='#333333',
-                              activeforeground='#EEEEEE', highlightcolor="black", relief=tk.SUNKEN, justify=tk.LEFT,
+                              bg=invert_color('#222222'), fg=invert_color('#EEEEEE'), bd=0,
+                              activebackground=invert_color('#333333'),
+                              activeforeground=invert_color('#EEEEEE'), highlightcolor="black", relief=tk.SUNKEN,
+                              justify=tk.LEFT,
                               wraplength=170,
                               command=lambda key=i + kol: self.press(key)))
                 self.buttons[i + kol].bind("<Enter>", lambda event, number=i + kol: self.but(number))
@@ -240,18 +277,28 @@ class main_window:
         # self.activate_RadioButton(mas)
         # self.vizual()
         self.MAIN_WINDOW.mainloop()
-
-    def but(self, number: int):
-        if number % 4 == 0:
-            pass
+    def invett_colors(self):
+        global invert
+        print(self.menu_varible.get())
+        if invert == int('bbbbbb',16):
+            if self.menu_varible.get() == 0:
+                return
+            invert = 0
         else:
-            self.buttons[number]["bg"] = '#333333'
+            if self.menu_varible.get() == 1:
+                return
+            invert = int('bbbbbb', 16)
+
+        self.MAIN_WINDOW.destroy()
+        main_window(self.menu_varible.get())
+    def but(self, number: int):
+        if not number % 4 == 0 and self.buttons[number]["bg"] != invert_color("#CCCCCC"):
+            self.buttons[number]["bg"] = invert_color('#333333')
 
     def butleave(self, number: int):
-        if number % 4 == 0:
-            pass
-        else:
-            self.buttons[number]["bg"] = '#222222'
+        if not number % 4 == 0 and self.buttons[number]["bg"] != invert_color("#CCCCCC"):
+            self.buttons[number]["bg"] = invert_color('#222222')
+            self.buttons[number]["fg"] = invert_color('#EEEEEE')
 
     def dict_factory(self, cursor, row):
         d = {}
@@ -282,7 +329,8 @@ class main_window:
             self.variable.append(tk.IntVar())
             self.test_buttons.append(
                 tk.Checkbutton(self.MAIN_WINDOW, text=text[0], variable=self.variable[i], onvalue=1, offvalue=0,
-                               wraplength=1000,
+                               wraplength=1000, bg=invert_color('#F0F0F0'), fg=invert_color('#000000'),
+                               activebackground=invert_color('#F0F0F0'), activeforeground=invert_color('#000000'),
                                font=font.Font(family="@Microsoft YaHei UI Light", size=20)))
             self.test_buttons[i].place(x=225, y=150 + 100 * i)
 
@@ -292,11 +340,20 @@ class main_window:
         self.variable.append(tk.IntVar())
         for i, text in enumerate(texts):
             self.test_buttons.append(
-                tk.Radiobutton(self.MAIN_WINDOW, text=text[0], variable=self.variable[0], value=i, wraplength=900,
+                tk.Radiobutton(self.MAIN_WINDOW, text=text[0], variable=self.variable[0], value=i, wraplength=900,relief=tk.FLAT,overrelief=tk.FLAT,
+                               bg=invert_color('#F0F0F0'), fg=invert_color('#000000'),
+                               activebackground=invert_color('#F0F0F0'), activeforeground=invert_color('#000000'),indicatoron=False,
                                font=font.Font(family="@Microsoft YaHei UI Light", size=20)))
             self.test_buttons[i].place(x=225, y=150 + 140 * i)
 
     def press(self, key):
+        # print(colorchooser.askcolor('#ff9dee'))
+        for button in self.buttons:
+            if button['bg'] == invert_color('#CCCCCC'):
+                button['bg'] = invert_color('#222222')
+                button['fg'] = invert_color('#EEEEEE')
+        self.buttons[key]['bg'] = invert_color('#CCCCCC')
+        self.buttons[key]['fg'] = invert_color('#222222')
         self.vizual_delete()
         self.frame.delete_text()
         self.delete_buttons()
@@ -315,7 +372,7 @@ class main_window:
             self.frame.update_texts(usual_text=all_data[block].get('Theory'), main_text=all_data[block]['topic'])
             self.frame.create_text()
         elif item == 3:
-            self.end['bg'] = '#7CD5CB'
+            self.end['bg'] = invert_color('#7CD5CB')
             self.end['state'] = 'normal'
             cursor = self.conn.cursor()
             self.correct = 0
@@ -344,11 +401,11 @@ class main_window:
                 self.next['state'] = 'disabled'
                 self.next['bg'] = '#333333'
                 self.end['state'] = 'normal'
-                self.end['bg'] = '#7CD5CB'
+                self.end['bg'] = invert_color('#7CD5CB')
                 self.end.place(x=800, y=800)
             else:
                 self.next['state'] = 'normal'
-                self.next['bg'] = '#7CD5CB'
+                self.next['bg'] = invert_color('#7CD5CB')
             self.next.place(x=1000, y=800)
             self.prev.place(x=900, y=800)
 
@@ -374,8 +431,11 @@ class main_window:
             self.correct += 1
         self.end['state'] = 'disabled'
         self.end['bg'] = '#333333'
+        self.prev['state'] = 'disabled'
+        self.prev['bg'] = '#333333'
 
-        messagebox.askquestion('Конец', 'Ваш резульльтат прохождени теста ' + str(round(self.correct / len(self.questions) * 100,1)) + ' %.')
+        messagebox.askquestion('Конец', 'Ваш резульльтат прохождени теста ' + str(
+            round(self.correct / len(self.questions) * 100, 1)) + ' %.')
 
     def next_press(self):
         if self.check():
@@ -397,7 +457,7 @@ class main_window:
             self.prev['bg'] = '#333333'
         else:
             self.prev['state'] = 'normal'
-            self.prev['bg'] = '#7CD5CB'
+            self.prev['bg'] = invert_color('#7CD5CB')
 
         if len(self.questions) == self.number + 1:
             self.end.place(x=800, y=800)
@@ -405,13 +465,12 @@ class main_window:
             self.next['bg'] = '#333333'
         else:
             self.next['state'] = 'normal'
-            self.next['bg'] = '#7CD5CB'
+            self.next['bg'] = invert_color('#7CD5CB')
 
         self.frame.update_texts(main_text=self.questions[self.number])
         self.frame.create_text()
         self.next.place(x=1000, y=800)
         self.prev.place(x=900, y=800)
-
 
     def prev_press(self):
         self.number -= 1
@@ -422,8 +481,9 @@ class main_window:
         shuffle(self.answers)
         if self.check():
             self.correct -= 1
-
-
+        if self.number == 0:
+            self.prev['state'] = 'disabled'
+            self.prev['bg'] = '#333333'
         if self.types[self.number] == '1':
             self.activate_CheckButton(self.answers)
         else:
@@ -431,7 +491,7 @@ class main_window:
 
         if self.number != len(self.questions) - 1:
             self.next['state'] = 'normal'
-            self.next['bg'] = '#7CD5CB'
+            self.next['bg'] = invert_color('#7CD5CB')
 
         if len(self.questions) == self.number + 1:
             self.end.place(x=800, y=800)
@@ -439,7 +499,7 @@ class main_window:
             self.next['bg'] = '#333333'
         else:
             self.next['state'] = 'normal'
-            self.next['bg'] = '#7CD5CB'
+            self.next['bg'] = invert_color('#7CD5CB')
 
         self.frame.update_texts(main_text=self.questions[self.number])
         self.frame.create_text()
