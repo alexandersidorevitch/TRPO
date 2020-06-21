@@ -2,3 +2,6 @@
 # Default ignored files
 /workspace.xml
 /project_trpo
+/bd.py
+/paralelizm.py
+/ввод полей.py
