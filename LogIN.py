@@ -1,4 +1,3 @@
-from os import path
 from sqlite3 import *
 from tkinter import font, messagebox
 
@@ -24,7 +23,7 @@ class Login:
 
         self.login = StringVar()
         self.log = Entry(LOGIN, textvariable=self.login, bg="#222222", fg="#FFFFFF", selectbackground="#444444",
-                         selectforeground="#19C710",width=10,font=("@Microsoft YaHei UI Light", 16, "bold"))
+                         selectforeground="#19C710", width=10, font=("@Microsoft YaHei UI Light", 16, "bold"))
         self.log.place(x=200, y=160)
         self.log.bind("<Any-KeyRelease>", self.check_login)
         fon = list(font.families())
@@ -32,7 +31,8 @@ class Login:
         Label(LOGIN, text="Пароль", fg="#FFFFFF", bg="#444444").place(x=200, y=198)
         self.password = StringVar()
         self.pas = Entry(LOGIN, textvariable=self.password, bg="#222222", fg="#FFFFFF", show="*",
-                         selectbackground="#444444", selectforeground="#19C710",width=10,font=("@Microsoft YaHei UI Light", 16, "bold"))
+                         selectbackground="#444444", selectforeground="#19C710", width=10,
+                         font=("@Microsoft YaHei UI Light", 16, "bold"))
         self.pas.place(x=200, y=220)
         self.pas.bind("<Any-KeyRelease>", self.check_password)
         self.pas.bind("<Enter>", self.Enter)
@@ -63,10 +63,10 @@ class Login:
                 return True
         return False
 
-    def Enter(self,event):
+    def Enter(self, event):
         self.pas['show'] = ""
 
-    def Leave(self,event):
+    def Leave(self, event):
         self.pas['show'] = "*"
 
     def press_registration(self):
@@ -89,10 +89,11 @@ class Login:
                 messagebox.showerror('Ошибка', 'Неправильно введен логин или пароль')
             else:
                 self.cursor.execute("SELECT password FROM users WHERE ? = USERNAME", (self.login.get(),))
-                all_data = self.cursor.fetchall()[0]
+                all_data = self.cursor.fetchone()
                 if self.password.get() == rsa.decrypt(all_data['password'], rsa.PrivateKey(*priv_key)).decode('utf-8'):
                     self.LOGIN.destroy()
-                    main_window.main_window()
+                    self.cursor.execute("SELECT theme FROM Users WHERE ? = USERNAME", (self.login.get(),))
+                    main_window.main_window(self.cursor.fetchone()['theme'], self.login.get())
 
                 else:
                     messagebox.showerror('Ошибка', 'Неправильно введен логин или пароль')

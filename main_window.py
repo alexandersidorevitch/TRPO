@@ -6,6 +6,7 @@ from sqlite3 import *
 from tkinter import font, messagebox
 
 import Visualition
+import records
 
 invert = int("bbbbbb", 16)
 
@@ -44,10 +45,12 @@ class VerticalScrolledFrame:
                       font=("@Microsoft YaHei UI Light", 32, "bold"))
         self.vizual_button = tk.Button(master, **kwargs,
                                        command=lambda: self.press_vizual())
-        self.main_text = tk.Label(self.outer, text="", font=("Bahnschrift Light SemiCondensed", 32, "bold"),bg=invert_color('#F0F0F0'), fg=invert_color('#111111'))
+        self.main_text = tk.Label(self.outer, text="", font=("Bahnschrift Light SemiCondensed", 32, "bold"),
+                                  bg=invert_color('#F0F0F0'), fg=invert_color('#111111'))
 
         self.vizual_lebel = tk.Label(master, text="Введите количество элементов или массив значений",
-                                     font=font.Font(family="@Microsoft YaHei UI Light", size=14),bg=bg,fg=invert_color('#000000'))
+                                     font=font.Font(family="@Microsoft YaHei UI Light", size=14), bg=bg,
+                                     fg=invert_color('#000000'))
         self.edit.bind("<Any-KeyRelease>", self.check)
         # ttk.Notebook()relief=tk.FLAT,
         self.usual_text = tk.Text(width=82, height=10, wrap=tk.WORD, font=("@Microsoft YaHei UI Light", 16),
@@ -132,14 +135,14 @@ class VerticalScrolledFrame:
     def press_vizual(self):
         if self.varible.get().count(','):
             if len(self.varible.get().split(',')) < 180:
-                speed = 10
+                speed = 1
             else:
                 speed = 3
             Visualition.start(self.func, len(self.varible.get().split(',')), speed,
                               list(map(lambda x: 980 - int(x), self.varible.get().split(','))))
         else:
             if int(self.varible.get()) < 180:
-                speed = 1
+                speed = 30
             else:
                 speed = 3
             Visualition.start(self.func, int(self.varible.get()), int(self.varible.get()) // 3)
@@ -164,12 +167,11 @@ class VerticalScrolledFrame:
 #  **** SCROLL BAR TEST *****
 
 class main_window:
-    def __init__(self,varib=1):
+    def __init__(self, varib=1, login=''):
         self.MAIN_WINDOW = tk.Tk()
         self.MAIN_WINDOW.title("Scrollbar Test")
         self.MAIN_WINDOW.resizable(False, True)
-
-
+        self.login = login
         self.color = 0
         if varib:
             global invert
@@ -188,10 +190,12 @@ class main_window:
         menu = tk.Menu()
         settings = tk.Menu(tearoff=0)
         self.menu_varible.set(varib)
-        settings.add_radiobutton(label='Темная тема', value=0, variable=self.menu_varible,command=self.invett_colors)
-        settings.add_radiobutton(label='Светлая тема', value=1, variable=self.menu_varible,command=self.invett_colors)
+        settings.add_radiobutton(label='Темная тема', value=0, variable=self.menu_varible, command=self.invett_colors)
+        settings.add_radiobutton(label='Светлая тема', value=1, variable=self.menu_varible, command=self.invett_colors)
         menu.add_cascade(label='Настройки темы', menu=settings)
+        menu.add_cascade(label='Рекорды', command=self.records)
         self.MAIN_WINDOW.config(menu=menu)
+        self.topic = -1
         width = 1200
         height = 900
         self.MAIN_WINDOW.geometry(
@@ -277,10 +281,15 @@ class main_window:
         # self.activate_RadioButton(mas)
         # self.vizual()
         self.MAIN_WINDOW.mainloop()
+
+    def records(self):
+        records.records()
+
     def invett_colors(self):
         global invert
-        print(self.menu_varible.get())
-        if invert == int('bbbbbb',16):
+        cursor = self.conn.cursor()
+
+        if invert == int('bbbbbb', 16):
             if self.menu_varible.get() == 0:
                 return
             invert = 0
@@ -288,9 +297,11 @@ class main_window:
             if self.menu_varible.get() == 1:
                 return
             invert = int('bbbbbb', 16)
-
+        cursor.execute("UPDATE Users SET theme = ? WHERE USERNAME = ?", (self.menu_varible.get(), self.login))
+        self.conn.commit()
         self.MAIN_WINDOW.destroy()
-        main_window(self.menu_varible.get())
+        main_window(self.menu_varible.get(), self.login)
+
     def but(self, number: int):
         if not number % 4 == 0 and self.buttons[number]["bg"] != invert_color("#CCCCCC"):
             self.buttons[number]["bg"] = invert_color('#333333')
@@ -330,8 +341,10 @@ class main_window:
             self.test_buttons.append(
                 tk.Checkbutton(self.MAIN_WINDOW, text=text[0], variable=self.variable[i], onvalue=1, offvalue=0,
                                wraplength=1000, bg=invert_color('#F0F0F0'), fg=invert_color('#000000'),
-                               activebackground=invert_color('#F0F0F0'), activeforeground=invert_color('#000000'),
+                               selectcolor=invert_color('#EEEEEE'),
                                font=font.Font(family="@Microsoft YaHei UI Light", size=20)))
+            self.test_buttons[i]['activebackground'] = 'red'
+            self.test_buttons[i]['activeforeground'] = 'black'
             self.test_buttons[i].place(x=225, y=150 + 100 * i)
 
     def activate_RadioButton(self, texts):
@@ -340,9 +353,10 @@ class main_window:
         self.variable.append(tk.IntVar())
         for i, text in enumerate(texts):
             self.test_buttons.append(
-                tk.Radiobutton(self.MAIN_WINDOW, text=text[0], variable=self.variable[0], value=i, wraplength=900,relief=tk.FLAT,overrelief=tk.FLAT,
+                tk.Radiobutton(self.MAIN_WINDOW, text=text[0], variable=self.variable[0], value=i, wraplength=900,
+                               relief=tk.FLAT, overrelief=tk.FLAT,
                                bg=invert_color('#F0F0F0'), fg=invert_color('#000000'),
-                               activebackground=invert_color('#F0F0F0'), activeforeground=invert_color('#000000'),indicatoron=False,
+                               selectcolor=invert_color('#EEEEEE'),
                                font=font.Font(family="@Microsoft YaHei UI Light", size=20)))
             self.test_buttons[i].place(x=225, y=150 + 140 * i)
 
@@ -372,6 +386,7 @@ class main_window:
             self.frame.update_texts(usual_text=all_data[block].get('Theory'), main_text=all_data[block]['topic'])
             self.frame.create_text()
         elif item == 3:
+            self.topic = block
             self.end['bg'] = invert_color('#7CD5CB')
             self.end['state'] = 'normal'
             cursor = self.conn.cursor()
@@ -433,7 +448,15 @@ class main_window:
         self.end['bg'] = '#333333'
         self.prev['state'] = 'disabled'
         self.prev['bg'] = '#333333'
-
+        cursor = self.conn.cursor()
+        cursor.execute('DELETE FROM Records WHERE USERNAME = ? AND topic = ? AND result <= ?',
+                       (self.login, self.topic, round(self.correct / len(self.questions) * 100, 1)))
+        self.conn.commit()
+        cursor.execute(
+            '''INSERT INTO Records(USERNAME,topic, result) SELECT ?, ?, ? WHERE NOT EXISTS(SELECT 1 FROM Records 
+            WHERE USERNAME = ? AND topic = ?);''',
+            (self.login, self.topic, round(self.correct / len(self.questions) * 100, 1), self.login, self.topic,))
+        self.conn.commit()
         messagebox.askquestion('Конец', 'Ваш резульльтат прохождени теста ' + str(
             round(self.correct / len(self.questions) * 100, 1)) + ' %.')
 
@@ -452,10 +475,7 @@ class main_window:
         else:
             self.activate_RadioButton(self.answers)
 
-        if self.number == 0:
-            self.prev['state'] = 'disabled'
-            self.prev['bg'] = '#333333'
-        else:
+        if self.number != 0:
             self.prev['state'] = 'normal'
             self.prev['bg'] = invert_color('#7CD5CB')
 
@@ -473,12 +493,14 @@ class main_window:
         self.prev.place(x=900, y=800)
 
     def prev_press(self):
+
         self.number -= 1
         cursor = self.conn.cursor()
         cursor.execute("SELECT LABEL, correct FROM All_Answers WHERE question_id = ?", (self.id[self.number],))
         all_data = cursor.fetchall()
         self.answers = [(i['LABEL'], i['correct']) for i in all_data]
         shuffle(self.answers)
+
         if self.check():
             self.correct -= 1
         if self.number == 0:
@@ -493,11 +515,7 @@ class main_window:
             self.next['state'] = 'normal'
             self.next['bg'] = invert_color('#7CD5CB')
 
-        if len(self.questions) == self.number + 1:
-            self.end.place(x=800, y=800)
-            self.next['state'] = 'disabled'
-            self.next['bg'] = '#333333'
-        else:
+        if len(self.questions) != self.number + 1:
             self.next['state'] = 'normal'
             self.next['bg'] = invert_color('#7CD5CB')
 
@@ -520,4 +538,4 @@ class main_window:
 
 
 if __name__ == "__main__":
-    main_window()
+    main_window(1, 'A_Valer')

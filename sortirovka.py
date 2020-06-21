@@ -39,7 +39,7 @@ class AsyncQuickSort(Create):
         self.rand_colors = ('#D0FF00', '#00FFA9', "#E99105", "#E90084", "#09E2E9")
 
     async def show1(self, first_place, second_place):
-        c = Des(1 / Des((90 // self.speed)))
+        c = Des(1 / Des((90)))
         if first_place > second_place:
             a = -1
             b = 1
@@ -50,7 +50,7 @@ class AsyncQuickSort(Create):
         precolor2 = self.c.itemcget(self.tags[second_place], 'fill')
         self.c.itemconfig(self.tags[first_place], fill=self.colors_scheme[self.all_color][2])
         self.c.itemconfig(self.tags[second_place], fill=self.colors_scheme[self.all_color][3])
-        for i in range(90 // self.speed):
+        for i in range(90):
             await asyncio.sleep((1 / (((self.speed) * 10) ** 2)))
             self.c.move(self.tags[first_place], self.width_prym * a * abs(first_place - second_place) * c, 0)
             self.c.move(self.tags[second_place], self.width_prym * b * abs(first_place - second_place) * c, 0)
@@ -93,13 +93,13 @@ class QuickSort(Create):
     def __init__(self, width: int, height: int, kol: int, speed: int, **args):
         super().__init__(width=width, height=height, kol=kol, speed=speed, name=args["name"],
                          color_scheme=args["color_scheme"], values=args["values"])
-        self.sleep = 30
+        self.speed = speed
         self.iter = 0
         self.rand_colors = ('#D0FF00', '#00FFA9', "#E99105", "#E90084", "#09E2E9")
 
 
     def showNoAsync(self, firsr_place, second_place):
-        c = Des(1 / Des((90 // self.speed)))
+        c = Des(1 / Des((90)))
         if firsr_place > second_place:
             right_side = -1
             left_side = 1
@@ -110,8 +110,8 @@ class QuickSort(Create):
         precolor2 = self.c.itemcget(self.tags[second_place], 'fill')
         self.c.itemconfig(self.tags[firsr_place], fill=self.colors_scheme[self.all_color][2])
         self.c.itemconfig(self.tags[second_place], fill=self.colors_scheme[self.all_color][3])
-        for i in range(90 // self.speed):
-            sleep(1 / (self.speed * 80))
+        for i in range(90):
+            sleep(1 / (self.speed * 30))
             self.c.move(self.tags[firsr_place], self.width_prym * right_side * abs(firsr_place - second_place) * c, 0)
             self.c.move(self.tags[second_place], self.width_prym * left_side * abs(firsr_place - second_place) * c, 0)
             self.c.update()
