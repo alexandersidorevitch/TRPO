@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='TRPO',
-    version='1.0',
+    version='2.0',
     packages=['sqllite3'],
     url='https://vk.com/sasha1737',
     license='CopyRight by Alexander',

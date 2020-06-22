@@ -7,7 +7,7 @@ from create import *
 
 class InsertionSort(Create):
     def __init__(self, width: int, height: int, kol: int, speed: int, **args):
-        super().__init__(width=width, height=height, kol=kol, speed=speed, name=args["name"],
+        super().__init__(width=width, height=height, kol=kol, speed=10, name=args["name"],
                          color_scheme=args["color_scheme"], values=args["values"])
         self.speed = 2
         self.iter = 0

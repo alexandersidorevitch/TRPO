@@ -6,6 +6,7 @@ from sqlite3 import *
 from tkinter import font, messagebox
 
 import Visualition
+import Info
 import records
 
 invert = int("bbbbbb", 16)
@@ -193,7 +194,8 @@ class main_window:
         settings.add_radiobutton(label='Темная тема', value=0, variable=self.menu_varible, command=self.invett_colors)
         settings.add_radiobutton(label='Светлая тема', value=1, variable=self.menu_varible, command=self.invett_colors)
         menu.add_cascade(label='Настройки темы', menu=settings)
-        menu.add_cascade(label='Рекорды', command=self.records)
+        menu.add_cascade(label='Рекорды', command=lambda: records.records())
+        menu.add_cascade(label='Справка', command=lambda: Info.Info(self.MAIN_WINDOW))
         self.MAIN_WINDOW.config(menu=menu)
         self.topic = -1
         width = 1200
@@ -282,8 +284,7 @@ class main_window:
         # self.vizual()
         self.MAIN_WINDOW.mainloop()
 
-    def records(self):
-        records.records()
+
 
     def invett_colors(self):
         global invert
